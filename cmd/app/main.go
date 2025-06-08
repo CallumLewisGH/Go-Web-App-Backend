@@ -38,7 +38,12 @@ func main() {
 //  - Database interactions CHECK
 //  - Service, data and presentation layers CHECK
 
+// Do just to see what challenges you aren't aware of:
+//  - Create Delete UserById route
+//  - Create Update UserById route
+//  - Create Get    UserById route
+
 // WANT TO HAVE:
-//  - QueryStringBuilder
-//  - Authentication
-//  - Role based access control
+//  - QueryStringBuilder CHECK (THAT NEED HAS BEEN FILLED)
+//  - Authentication HALFWAY
+//  - Role based access control NOT EVEN CLOSE

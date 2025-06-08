@@ -1,4 +1,4 @@
-package models
+package userModel
 
 import (
 	"time"
@@ -15,6 +15,7 @@ type User struct {
 	EmailVerified bool   `gorm:"default:false"`
 	PasswordHash  string `gorm:"size:255;not null" json:"-"`
 	LastLogin     *time.Time
+	PasswordSalt  string `gorm:"size:255;not null" json:"-"`
 
 	// Profile
 	ProfilePicture *string `gorm:"text"`

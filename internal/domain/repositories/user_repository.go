@@ -1,16 +1,16 @@
 package repos
 
 import (
-	"github.com/CallumLewisGH/Generic-Service-Base/internal/domain/models"
+	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
 	"gorm.io/gorm"
 )
 
 type UserRepo struct {
-	*BaseRepo
+	*BaseRepo[userModel.User]
 }
 
 func NewUserRepo(db *gorm.DB) *UserRepo {
-	return &UserRepo{BaseRepo: NewBaseRepo(db.Model(&models.User{}))}
+	return &UserRepo{BaseRepo: NewBaseRepo[userModel.User](db)}
 }
 
 func (repo *UserRepo) WithName(name string) *UserRepo {

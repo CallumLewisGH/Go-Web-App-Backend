@@ -73,7 +73,57 @@ const docTemplate = `{
                     "200": {
                         "description": "Returns a pagenated list of users",
                         "schema": {
-                            "$ref": "#/definitions/github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User"
+                            "$ref": "#/definitions/userModel.UserDTO"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new user with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Creates a new user",
+                "parameters": [
+                    {
+                        "description": "User details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userModel.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Returns the created user",
+                        "schema": {
+                            "$ref": "#/definitions/userModel.UserDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -81,20 +131,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User": {
+        "userModel.UserDTO": {
             "type": "object",
             "properties": {
                 "bio": {
                     "type": "string"
                 },
-                "createdAt": {
-                    "type": "string"
-                },
                 "deactivatedAt": {
                     "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "email": {
                     "type": "string"
@@ -126,24 +170,23 @@ const docTemplate = `{
                 "timezone": {
                     "type": "string"
                 },
-                "updatedAt": {
-                    "type": "string"
-                },
                 "username": {
                     "description": "Authentication",
                     "type": "string"
                 }
             }
         },
-        "gorm.DeletedAt": {
+        "userModel.UserRequest": {
             "type": "object",
             "properties": {
-                "time": {
+                "email": {
                     "type": "string"
                 },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }
@@ -152,11 +195,11 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
+	Version:          "",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Generic-Service-Base API",
+	Title:            "",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

@@ -5,8 +5,9 @@ import (
 
 	_ "github.com/CallumLewisGH/Generic-Service-Base/docs"
 	"github.com/CallumLewisGH/Generic-Service-Base/internal/api"
+	command "github.com/CallumLewisGH/Generic-Service-Base/internal/api/handlers/commands"
 	query "github.com/CallumLewisGH/Generic-Service-Base/internal/api/handlers/queries"
-	_ "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/models"
+	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +19,7 @@ func RegisterUserRoutes(s *api.Server) {
 	databaseGroup := s.Group("/users")
 	{
 		databaseGroup.GET("", getUsers)
+		databaseGroup.POST("", createUser)
 	}
 }
 
@@ -26,15 +28,49 @@ func RegisterUserRoutes(s *api.Server) {
 // @Description Gets all the users
 // @Tags users
 // @Produce json
-// @Success 200 {object} models.User "Returns a pagenated list of users"
+// @Success 200 {object} userModel.UserDTO "Returns a pagenated list of users"
 // @Router /users [get]
 func getUsers(c *gin.Context) {
-	result, err := query.GetAllUsersQuery()
+	user, err := query.GetAllUsersQuery()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, user)
 }
 
-// Param id path string true "User ID" Format(uuid) Example(550e8400-e29b-41d4-a716-446655440000)
+// Create user godoc
+// @Summary Creates a new user
+// @Description Creates a new user with the provided details
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body userModel.UserRequest true "User details"
+// @Success 201 {object} userModel.UserDTO "Returns the created user"
+// @Failure 400 {object} map[string]string "Invalid request body"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /users [post]
+func createUser(c *gin.Context) {
+	var req userModel.UserRequest
+
+	// Bind JSON request to UserRequest struct
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	// Validate required fields
+	if req.Username == "" || req.Email == "" || req.Password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username, email, and password are required"})
+		return
+	}
+
+	// Call command to create user
+	user, err := command.CreateUserCommand(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, user)
+}

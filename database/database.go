@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/CallumLewisGH/Generic-Service-Base/internal/domain/models"
+	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -73,7 +73,7 @@ func (db *Database) CloseDatabase() error {
 }
 
 func (db *Database) RunMigrations() error {
-	return db.GetGormDatabase().AutoMigrate(&models.User{})
+	return db.GetGormDatabase().AutoMigrate(&userModel.User{})
 }
 
 func (db *Database) GetGormDatabase() *gorm.DB {

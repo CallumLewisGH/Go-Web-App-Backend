@@ -10,17 +10,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func DbQuery[T any](queryFunction func(*gorm.DB, context.Context) ([]T, error)) ([]T, error) {
+// DbQuery runs a read-only query and automatically infers whether the result is []T or *T.
+func DbQuery[R any](queryFunc func(*gorm.DB, context.Context) (R, error)) (R, error) {
 	db := database.GetDatabase().GetGormDatabase()
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	tx := db.WithContext(ctx)
-
-	return queryFunction(tx, ctx)
+	return queryFunc(tx, ctx)
 }
 
-func DbExecute[T any](commandFunction func(*gorm.DB, context.Context) ([]T, error)) ([]T, error) {
+// DbExecute runs a write operation (insert/update/delete) and infers []T or *T.
+func DbExecute[R any](commandFunc func(*gorm.DB, context.Context) (R, error)) (R, error) {
 	db := database.GetDatabase().GetGormDatabase()
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -33,14 +34,14 @@ func DbExecute[T any](commandFunction func(*gorm.DB, context.Context) ([]T, erro
 		}
 	}()
 
-	result, err := commandFunction(tx, ctx)
+	result, err := commandFunc(tx, ctx)
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf("operation failed: %w", err)
+		return result, fmt.Errorf("operation failed: %w", err)
 	}
 
 	if err := tx.Commit().Error; err != nil {
-		return nil, fmt.Errorf("commit failed: %w", err)
+		return result, fmt.Errorf("commit failed: %w", err)
 	}
 
 	return result, nil

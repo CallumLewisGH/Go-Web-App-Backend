@@ -2,52 +2,49 @@ package repos
 
 import "gorm.io/gorm"
 
-type BaseRepo struct {
+type BaseRepo[T any] struct {
 	db *gorm.DB
 }
 
-func NewBaseRepo(db *gorm.DB) *BaseRepo {
-	return &BaseRepo{db: db}
+func NewBaseRepo[T any](db *gorm.DB) *BaseRepo[T] {
+	return &BaseRepo[T]{db: db}
 }
 
-func (repo *BaseRepo) Model(model any) *BaseRepo {
-	repo.db = repo.db.Model(model)
-	return repo
-}
-
-func (repo *BaseRepo) Limit(limit int) *BaseRepo {
+func (repo *BaseRepo[T]) Limit(limit int) *BaseRepo[T] {
 	repo.db = repo.db.Limit(limit)
 	return repo
 }
 
-func (repo *BaseRepo) Offset(offset int) *BaseRepo {
+func (repo *BaseRepo[T]) Offset(offset int) *BaseRepo[T] {
 	repo.db = repo.db.Offset(offset)
 	return repo
 }
 
-func (repo *BaseRepo) Order(order string) *BaseRepo {
+func (repo *BaseRepo[T]) Order(order string) *BaseRepo[T] {
 	repo.db = repo.db.Order(order)
 	return repo
 }
 
 // Terminal Methods => Terminate the builder
-
-// Terminal methods (execute the query)
-func (r *BaseRepo) Find(dest any) error {
-	return r.db.Find(dest).Error
+func (repo *BaseRepo[T]) Find(dest *[]T) error {
+	return repo.db.Find(dest).Error
 }
 
-func (r *BaseRepo) First(dest any) error {
-	return r.db.First(dest).Error
+func (repo *BaseRepo[T]) First(dest *T) error {
+	return repo.db.First(dest).Error
 }
 
-func (repo *BaseRepo) Count() (int64, error) {
+func (repo *BaseRepo[T]) Count() (int64, error) {
 	var count int64
 	err := repo.db.Count(&count).Error
 	return count, err
 }
 
-func (repo *UserRepo) Delete() (int64, error) {
-	result := repo.db.Delete(nil)
+func (repo *BaseRepo[T]) Create(dest *T) error {
+	return repo.db.Create(dest).Error
+}
+
+func (repo *BaseRepo[T]) Delete(dest *T) (int64, error) {
+	result := repo.db.Delete(dest)
 	return result.RowsAffected, result.Error
 }

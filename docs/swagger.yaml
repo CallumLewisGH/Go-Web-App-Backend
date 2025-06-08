@@ -1,14 +1,10 @@
 definitions:
-  github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User:
+  userModel.UserDTO:
     properties:
       bio:
         type: string
-      createdAt:
-        type: string
       deactivatedAt:
         type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       email:
         type: string
       emailVerified:
@@ -30,24 +26,21 @@ definitions:
         type: string
       timezone:
         type: string
-      updatedAt:
-        type: string
       username:
         description: Authentication
         type: string
     type: object
-  gorm.DeletedAt:
+  userModel.UserRequest:
     properties:
-      time:
+      email:
         type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
+      password:
+        type: string
+      username:
+        type: string
     type: object
 info:
   contact: {}
-  title: Generic-Service-Base API
-  version: "1.0"
 paths:
   /database/health:
     get:
@@ -87,8 +80,41 @@ paths:
         "200":
           description: Returns a pagenated list of users
           schema:
-            $ref: '#/definitions/github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User'
+            $ref: '#/definitions/userModel.UserDTO'
       summary: Returns all the users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user with the provided details
+      parameters:
+      - description: User details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/userModel.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Returns the created user
+          schema:
+            $ref: '#/definitions/userModel.UserDTO'
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Creates a new user
       tags:
       - users
 swagger: "2.0"
