@@ -58,6 +58,94 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users": {
+            "get": {
+                "description": "Gets all the users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Returns all the users",
+                "responses": {
+                    "200": {
+                        "description": "Returns a pagenated list of users",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User": {
+            "type": "object",
+            "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deactivatedAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailVerified": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isActive": {
+                    "description": "Status",
+                    "type": "boolean"
+                },
+                "isBanned": {
+                    "type": "boolean"
+                },
+                "lastLogin": {
+                    "type": "string"
+                },
+                "locale": {
+                    "description": "Preferences",
+                    "type": "string"
+                },
+                "profilePicture": {
+                    "description": "Profile",
+                    "type": "string"
+                },
+                "timezone": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "description": "Authentication",
+                    "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
         }
     }
 }`

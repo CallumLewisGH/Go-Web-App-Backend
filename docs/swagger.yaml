@@ -1,3 +1,49 @@
+definitions:
+  github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User:
+    properties:
+      bio:
+        type: string
+      createdAt:
+        type: string
+      deactivatedAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+      id:
+        type: integer
+      isActive:
+        description: Status
+        type: boolean
+      isBanned:
+        type: boolean
+      lastLogin:
+        type: string
+      locale:
+        description: Preferences
+        type: string
+      profilePicture:
+        description: Profile
+        type: string
+      timezone:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        description: Authentication
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
 info:
   contact: {}
   title: Generic-Service-Base API
@@ -32,4 +78,17 @@ paths:
       summary: Runs the migrations from GORM
       tags:
       - database
+  /users:
+    get:
+      description: Gets all the users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns a pagenated list of users
+          schema:
+            $ref: '#/definitions/github_com_CallumLewisGH_Generic-Service-Base_internal_domain_models.User'
+      summary: Returns all the users
+      tags:
+      - users
 swagger: "2.0"
