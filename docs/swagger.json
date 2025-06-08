@@ -1,0 +1,54 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Generic-Service-Base API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/database/health": {
+            "get": {
+                "description": "Gets the state of the connected database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "database"
+                ],
+                "summary": "Returns the state of the connected database",
+                "responses": {
+                    "200": {
+                        "description": "Returns database health status",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/database/migrations": {
+            "post": {
+                "description": "Runs the database migrations from GORM",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "database"
+                ],
+                "summary": "Runs the migrations from GORM",
+                "responses": {
+                    "200": {
+                        "description": "Retuns success message",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Retuns any errors",
+                        "schema": {}
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+services:
+  service_base:
+    container_name: Generic-Service-Base
+    build: ./
+    ports:
+      - "8080:8080"
+  
+  db:
+    container_name: Generic-db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "Mosaic~Tapestry4744"
+      POSTGRES_DB: Generic_db
+    ports:
+      - 5432:5432
+    volumes:
+      - db_data:/var/lib/postgesql/data
+  
+  # web:
+  #   volumes:
+  #     - web:usr/src/app
+
+volumes:
+  db_data:
+  #base:
+  #web:
