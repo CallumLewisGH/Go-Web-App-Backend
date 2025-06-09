@@ -45,7 +45,9 @@ func main() {
 
 // WANT TO HAVE:
 //  - QueryStringBuilder type thing CHECK (THAT NEED HAS BEEN FILLED)
-//  - Authentication HALFWAY
+//  - Authentication HALFWAY => I think I can use GoAuth with a auth provider IE google
+//     - I can implement Authentication Middleware on routes
+//     - I can foresee a problem with RBAC where I can't call more than one command/query from the same route. Since I won't be able to effectively "rollback" the transactions
 //  - Forgot my passcode
 //  - 2FA
 //  - Role based access control NOT EVEN CLOSE
