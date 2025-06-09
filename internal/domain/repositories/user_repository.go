@@ -18,7 +18,17 @@ func (repo *UserRepo) WithName(name string) *UserRepo {
 	return repo
 }
 
-func (repo *UserRepo) WithId(ID int) *UserRepo {
-	repo.db = repo.db.Where("ID = ?", ID)
+func (repo *UserRepo) WithId(id uint) *UserRepo {
+	repo.db = repo.db.Where("id = ?", id)
+	return repo
+}
+
+func (repo *UserRepo) IsActive() *UserRepo {
+	repo.db = repo.db.Where("is_active = ?", true)
+	return repo
+}
+
+func (repo *UserRepo) IsInactive() *UserRepo {
+	repo.db = repo.db.Where("is_active = ?", false)
 	return repo
 }

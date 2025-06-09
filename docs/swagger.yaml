@@ -72,6 +72,42 @@ paths:
       tags:
       - database
   /users:
+    delete:
+      description: Deletes the user where ID is passed in the user_id header
+      parameters:
+      - description: User ID to delete
+        in: header
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfull deletion returns the model of the deleted user
+          schema:
+            $ref: '#/definitions/userModel.UserDTO'
+        "400":
+          description: Missing or invalid user ID header
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Deletes the user with the specified ID
+      tags:
+      - users
     get:
       description: Gets all the users
       produces:
@@ -81,6 +117,12 @@ paths:
           description: Returns a pagenated list of users
           schema:
             $ref: '#/definitions/userModel.UserDTO'
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Returns all the users
       tags:
       - users

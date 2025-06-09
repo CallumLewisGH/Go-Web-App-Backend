@@ -20,13 +20,13 @@ func CreateUserCommand(userReq *userModel.UserRequest) (*userModel.UserDTO, erro
 			PasswordHash: generatedHash,
 		}
 
-		err := repos.NewUserRepo(db).Create(&user)
+		created_user, err := repos.NewUserRepo(db).CreateOne(user)
 
 		if err != nil {
 			return nil, err
 		}
 
-		return user.ToUserDTO(), nil
+		return created_user.ToUserDTO(), nil
 	}
 
 	return cqrs.DbExecute(commandFunc)

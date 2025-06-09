@@ -39,11 +39,23 @@ func main() {
 //  - Service, data and presentation layers CHECK
 
 // Do just to see what challenges you aren't aware of:
-//  - Create Delete UserById route
-//  - Create Update UserById route
-//  - Create Get    UserById route
+//  - Create Delete UserById route CHECK
+//  - Create Update UserById route CHECK
+//  - Create Get    UserById route CHECK
 
 // WANT TO HAVE:
-//  - QueryStringBuilder CHECK (THAT NEED HAS BEEN FILLED)
+//  - QueryStringBuilder type thing CHECK (THAT NEED HAS BEEN FILLED)
 //  - Authentication HALFWAY
+//  - Forgot my passcode
+//  - 2FA
 //  - Role based access control NOT EVEN CLOSE
+
+//Implementation Notes
+// Queries IE repo.find, .first, all accept pointers &user and data is returned to that object with an err being returned from the function
+// Commands IE repo.CreateOne, UpdateMany, DeleteOne, all accept actual values this way the input value is discaurded and another value is supplimented
+
+//COMMANDS THAT ARE GOOD TO HAVE EASY ACCESS TO
+// - docker compose up
+// - swag init -g cmd/app/main.go --dir ./
+// - go run cmd/app/main.go
+//

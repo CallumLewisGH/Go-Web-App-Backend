@@ -12,10 +12,7 @@ import (
 func GetAllUsersQuery() ([]userModel.UserDTO, error) {
 	queryFunc := func(db *gorm.DB, ctx context.Context) ([]userModel.UserDTO, error) {
 		users := []userModel.User{}
-		usersRepo := repos.NewUserRepo(db)
-		err := usersRepo.Find(&users)
-
-		if err != nil {
+		if err := repos.NewUserRepo(db).Find(&users); err != nil {
 			return nil, err
 		}
 

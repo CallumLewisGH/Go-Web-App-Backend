@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	_ "github.com/CallumLewisGH/Generic-Service-Base/docs"
 	"github.com/CallumLewisGH/Generic-Service-Base/internal/api"
@@ -16,10 +17,12 @@ import (
 // @Description User-related endpoints
 // @Tags User
 func RegisterUserRoutes(s *api.Server) {
-	databaseGroup := s.Group("/users")
+	routeGroup := s.Group("/users")
 	{
-		databaseGroup.GET("", getUsers)
-		databaseGroup.POST("", createUser)
+		routeGroup.GET("", getUsers)
+		routeGroup.POST("", createUser)
+		routeGroup.PUT("/id", updateUserById)
+		routeGroup.DELETE("/id", deleteUserById)
 	}
 }
 
@@ -29,11 +32,13 @@ func RegisterUserRoutes(s *api.Server) {
 // @Tags users
 // @Produce json
 // @Success 200 {object} userModel.UserDTO "Returns a pagenated list of users"
+// @Failure 500 {object} map[string]string "Internal server error"
 // @Router /users [get]
 func getUsers(c *gin.Context) {
 	user, err := query.GetAllUsersQuery()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, user)
@@ -53,24 +58,96 @@ func getUsers(c *gin.Context) {
 func createUser(c *gin.Context) {
 	var req userModel.UserRequest
 
-	// Bind JSON request to UserRequest struct
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	// Validate required fields
 	if req.Username == "" || req.Email == "" || req.Password == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Username, email, and password are required"})
 		return
 	}
 
-	// Call command to create user
 	user, err := command.CreateUserCommand(&req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, user)
+}
+
+// UpdateUser godoc
+// @Summary Updates the user with the specified ID
+// @Description Updates the user where ID is passed in the user_id header with the provided details
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user_id header string true "User ID to update"
+// @Param user body userModel.UserRequest true "User update details"
+// @Success 200 {object} userModel.UserDTO "Successfully updated user"
+// @Failure 400 {object} map[string]string "Missing or invalid user ID header or invalid request body"
+// @Failure 404 {object} map[string]string "User not found"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /users [put]
+func updateUserById(c *gin.Context) {
+	userIDStr := c.GetHeader("user_id")
+	if userIDStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id header is required"})
+		return
+	}
+
+	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a positive integer"})
+		return
+	}
+
+	var user userModel.UserDTO
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
+		return
+	}
+
+	updatedUser, err := command.UpdateUserByIdCommand(uint(userID), user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedUser)
+}
+
+// DeleteUser godoc
+// @Summary Deletes the user with the specified ID
+// @Description Deletes the user where ID is passed in the user_id header
+// @Tags users
+// @Produce json
+// @Param user_id header string true "User ID to delete"
+// @Success 200 {object} userModel.UserDTO "Successfull deletion returns the model of the deleted user"
+// @Failure 400 {object} map[string]string "Missing or invalid user ID header"
+// @Failure 404 {object} map[string]string "User not found"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /users [delete]
+func deleteUserById(c *gin.Context) {
+	// Get user ID from custom header
+	userIDStr := c.GetHeader("user_id")
+	if userIDStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id header is required"})
+		return
+	}
+
+	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a positive integer"})
+		return
+	}
+
+	user, err := command.DeleteUserByIdCommand(uint(userID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }
