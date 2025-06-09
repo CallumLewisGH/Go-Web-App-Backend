@@ -20,6 +20,7 @@ func RegisterUserRoutes(s *api.Server) {
 	routeGroup := s.Group("/users")
 	{
 		routeGroup.GET("", getUsers)
+		routeGroup.GET("/id", getUserById)
 		routeGroup.POST("", createUser)
 		routeGroup.PUT("/id", updateUserById)
 		routeGroup.DELETE("/id", deleteUserById)
@@ -36,6 +37,40 @@ func RegisterUserRoutes(s *api.Server) {
 // @Router /users [get]
 func getUsers(c *gin.Context) {
 	user, err := query.GetAllUsersQuery()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+// Get user by ID godoc
+// @Summary Returns the user with the specified ID
+// @Description Gets the user where ID is passed in the user_id header
+// @Tags users
+// @Produce json
+// @Param user_id header string true "User ID to retrieve"
+// @Success 200 {object} userModel.UserDTO "Returns the requested user"
+// @Failure 400 {object} map[string]string "Missing or invalid user ID header"
+// @Failure 404 {object} map[string]string "User not found"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /users/id [get]
+func getUserById(c *gin.Context) {
+	// Get user ID from custom header
+	userIDStr := c.GetHeader("user_id")
+	if userIDStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id header is required"})
+		return
+	}
+
+	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a positive integer"})
+		return
+	}
+
+	user, err := query.GetUserByIdQuery(uint(userID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -84,12 +119,12 @@ func createUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user_id header string true "User ID to update"
-// @Param user body userModel.UserRequest true "User update details"
+// @Param user body userModel.UserDTO true "User update details"
 // @Success 200 {object} userModel.UserDTO "Successfully updated user"
 // @Failure 400 {object} map[string]string "Missing or invalid user ID header or invalid request body"
 // @Failure 404 {object} map[string]string "User not found"
 // @Failure 500 {object} map[string]string "Internal server error"
-// @Router /users [put]
+// @Router /users/id [put]
 func updateUserById(c *gin.Context) {
 	userIDStr := c.GetHeader("user_id")
 	if userIDStr == "" {
@@ -111,7 +146,7 @@ func updateUserById(c *gin.Context) {
 
 	updatedUser, err := command.UpdateUserByIdCommand(uint(userID), user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -128,7 +163,7 @@ func updateUserById(c *gin.Context) {
 // @Failure 400 {object} map[string]string "Missing or invalid user ID header"
 // @Failure 404 {object} map[string]string "User not found"
 // @Failure 500 {object} map[string]string "Internal server error"
-// @Router /users [delete]
+// @Router /users/id [delete]
 func deleteUserById(c *gin.Context) {
 	// Get user ID from custom header
 	userIDStr := c.GetHeader("user_id")
