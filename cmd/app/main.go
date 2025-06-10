@@ -26,6 +26,7 @@ func main() {
 	//Route Registry
 	routes.RegisterDatabaseRoutes(srv)
 	routes.RegisterUserRoutes(srv)
+	routes.RegisterAuthenticationRoutes(srv)
 
 	println(fmt.Sprintf("\x1b]8;;%s\x1b\\%s\x1b]8;;\x1b\\", "http://localhost:8080/swagger/index.html", "SwaggerUI: http://localhost:8080/swagger/index.html"))
 

@@ -4,6 +4,57 @@
         "contact": {}
     },
     "paths": {
+        "/authentication/callback": {
+            "post": {
+                "description": "Handles the callback from Google OAuth2, creates user if new, and sets JWT cookie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Google OAuth2 callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "OAuth state token",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "OAuth authorization code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirects to /home on success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid state token",
+                        "schema": {}
+                    },
+                    "409": {
+                        "description": "Returns error if username derived from email is already in use",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Returns error if token exchange, user info fetch, or JWT generation fails",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/authentication/login": {
             "get": {
                 "description": "Redirects to Google's OAuth2 consent page",
@@ -24,6 +75,26 @@
                     "500": {
                         "description": "Returns error if session state cannot be generated",
                         "schema": {}
+                    }
+                }
+            }
+        },
+        "/authentication/logout": {
+            "post": {
+                "description": "Clears the JWT cookie, effectively logging out the user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Logout current user",
+                "responses": {
+                    "200": {
+                        "description": "Returns success message",
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 }
             }

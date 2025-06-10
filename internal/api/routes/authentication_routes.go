@@ -27,7 +27,7 @@ func RegisterAuthenticationRoutes(s *api.Server) {
 		authenticationGroup.GET("/login", googleLogin)
 		authenticationGroup.POST("/callback", googleCallback)
 		authenticationGroup.POST("/logout", logout)
-		authenticationGroup.GET("/user", getAuthenticatedUser)
+		authenticationGroup.GET("/user", middleware.RequireAuth, getAuthenticatedUser)
 	}
 }
 
@@ -62,7 +62,6 @@ func googleLogin(c *gin.Context) {
 // @Failure 500 {object} error "Returns error if token exchange, user info fetch, or JWT generation fails"
 // @Failure 409 {object} error "Returns error if username derived from email is already in use"
 // @Router /authentication/callback [post]
-
 func googleCallback(c *gin.Context) {
 	session := sessions.Default(c)
 
@@ -155,7 +154,6 @@ func getAuthenticatedUser(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} object "Returns success message"
 // @Router /authentication/logout [post]
-
 func logout(c *gin.Context) {
 	c.SetCookie("jwt", "", -1, "/", os.Getenv("DOMAIN"), true, true)
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out"})
