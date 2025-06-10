@@ -15,6 +15,59 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/authentication/login": {
+            "get": {
+                "description": "Redirects to Google's OAuth2 consent page",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Initiate Google OAuth2 login",
+                "responses": {
+                    "302": {
+                        "description": "Redirects to Google OAuth",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returns error if session state cannot be generated",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/authentication/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns information about the currently authenticated user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Get authenticated user info",
+                "responses": {
+                    "200": {
+                        "description": "Returns user object",
+                        "schema": {
+                            "$ref": "#/definitions/userModel.UserDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/database/health": {
             "get": {
                 "description": "Gets the state of the connected database",
@@ -333,6 +386,9 @@ const docTemplate = `{
         "userModel.UpdateUserRequest": {
             "type": "object",
             "properties": {
+                "bio": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },

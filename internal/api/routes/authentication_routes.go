@@ -31,6 +31,14 @@ func RegisterAuthenticationRoutes(s *api.Server) {
 	}
 }
 
+// googleLogin godoc
+// @Summary Initiate Google OAuth2 login
+// @Description Redirects to Google's OAuth2 consent page
+// @Tags authentication
+// @Produce json
+// @Success 302 {string} string "Redirects to Google OAuth"
+// @Failure 500 {object} error "Returns error if session state cannot be generated"
+// @Router /authentication/login [get]
 func googleLogin(c *gin.Context) {
 	session := sessions.Default(c)
 	state, _ := authentication.GenerateState()
@@ -40,6 +48,20 @@ func googleLogin(c *gin.Context) {
 	url := authentication.Config.AuthCodeURL(state)
 	c.Redirect(http.StatusFound, url)
 }
+
+// googleCallback godoc
+// @Summary Google OAuth2 callback
+// @Description Handles the callback from Google OAuth2, creates user if new, and sets JWT cookie
+// @Tags authentication
+// @Accept json
+// @Produce json
+// @Param state query string true "OAuth state token"
+// @Param code query string true "OAuth authorization code"
+// @Success 302 {string} string "Redirects to /home on success"
+// @Failure 400 {object} error "Invalid state token"
+// @Failure 500 {object} error "Returns error if token exchange, user info fetch, or JWT generation fails"
+// @Failure 409 {object} error "Returns error if username derived from email is already in use"
+// @Router /authentication/callback [post]
 
 func googleCallback(c *gin.Context) {
 	session := sessions.Default(c)
@@ -104,6 +126,15 @@ func googleCallback(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/home")
 }
 
+// getAuthenticatedUser godoc
+// @Summary Get authenticated user info
+// @Description Returns information about the currently authenticated user
+// @Tags authentication
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} userModel.UserDTO "Returns user object"
+// @Failure 404 {object} error "User not found"
+// @Router /authentication/user [get]
 func getAuthenticatedUser(c *gin.Context) {
 	userAuthId := c.MustGet("userAuthId").(string)
 
@@ -116,6 +147,14 @@ func getAuthenticatedUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
+
+// logout godoc
+// @Summary Logout current user
+// @Description Clears the JWT cookie, effectively logging out the user
+// @Tags authentication
+// @Produce json
+// @Success 200 {object} object "Returns success message"
+// @Router /authentication/logout [post]
 
 func logout(c *gin.Context) {
 	c.SetCookie("jwt", "", -1, "/", os.Getenv("DOMAIN"), true, true)
