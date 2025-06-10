@@ -43,9 +43,9 @@ func getHealth(c *gin.Context) {
 // @Failure 500 {object} error "Retuns any errors"
 // @Router /database/migrations [post]
 func runMigrations(c *gin.Context) {
-	migrations := command.RunDatabaseMigrations()
-	if migrations != nil {
-		c.JSON(http.StatusInternalServerError, migrations)
+	err := command.RunDatabaseMigrations()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	c.JSON(http.StatusOK, "Migrations Successfull")
 }

@@ -2,8 +2,11 @@ package api
 
 import (
 	"fmt"
+	"os"
 
 	_ "github.com/CallumLewisGH/Generic-Service-Base/docs"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
@@ -20,6 +23,14 @@ func NewServer() *Server {
 
 	// Create Gin instance (with logger and recovery middleware)
 	router := gin.Default()
+
+	// Session configuration
+	store := cookie.NewStore(
+		[]byte(os.Getenv("GIN_SESSION_SECRET")),
+	)
+
+	// Session middleware
+	router.Use(sessions.Sessions("mysession", store))
 
 	// Swagger setup
 	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))

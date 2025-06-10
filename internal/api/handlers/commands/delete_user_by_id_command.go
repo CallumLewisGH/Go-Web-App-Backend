@@ -6,10 +6,11 @@ import (
 	cqrs "github.com/CallumLewisGH/Generic-Service-Base/internal/domain"
 	repos "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/repositories"
 	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func DeleteUserByIdCommand(id uint) (*userModel.UserDTO, error) {
+func DeleteUserByIdCommand(id uuid.UUID) (*userModel.UserDTO, error) {
 	commandFunc := func(db *gorm.DB, ctx context.Context) (*userModel.UserDTO, error) {
 		user := userModel.User{}
 		user.ID = id

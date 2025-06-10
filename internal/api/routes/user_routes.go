@@ -2,7 +2,6 @@ package routes
 
 import (
 	"net/http"
-	"strconv"
 
 	_ "github.com/CallumLewisGH/Generic-Service-Base/docs"
 	"github.com/CallumLewisGH/Generic-Service-Base/internal/api"
@@ -10,6 +9,7 @@ import (
 	query "github.com/CallumLewisGH/Generic-Service-Base/internal/api/handlers/queries"
 	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // Register User Routes godoc
@@ -64,13 +64,13 @@ func getUserById(c *gin.Context) {
 		return
 	}
 
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	userID, err := uuid.Parse(userIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a positive integer"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a valid GUID"})
 		return
 	}
 
-	user, err := query.GetUserByIdQuery(uint(userID))
+	user, err := query.GetUserByIdQuery(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -85,25 +85,25 @@ func getUserById(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param user body userModel.UserRequest true "User details"
+// @Param user body userModel.CreateUserRequest true "User details"
 // @Success 201 {object} userModel.UserDTO "Returns the created user"
 // @Failure 400 {object} map[string]string "Invalid request body"
 // @Failure 500 {object} map[string]string "Internal server error"
 // @Router /users [post]
 func createUser(c *gin.Context) {
-	var req userModel.UserRequest
+	var req userModel.CreateUserRequest
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindJSON(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	if req.Username == "" || req.Email == "" || req.Password == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Username, email, and password are required"})
+	if req.Username == "" || req.Email == "" || req.AuthId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username, email, and authId are required"})
 		return
 	}
 
-	user, err := command.CreateUserCommand(&req)
+	user, err := command.CreateUserCommand(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -119,7 +119,7 @@ func createUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user_id header string true "User ID to update"
-// @Param user body userModel.UserDTO true "User update details"
+// @Param user body userModel.UpdateUserRequest true "User update details"
 // @Success 200 {object} userModel.UserDTO "Successfully updated user"
 // @Failure 400 {object} map[string]string "Missing or invalid user ID header or invalid request body"
 // @Failure 404 {object} map[string]string "User not found"
@@ -132,19 +132,19 @@ func updateUserById(c *gin.Context) {
 		return
 	}
 
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	userID, err := uuid.Parse(userIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a positive integer"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a valid GUID"})
 		return
 	}
 
-	var user userModel.UserDTO
+	var user userModel.UpdateUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
 		return
 	}
 
-	updatedUser, err := command.UpdateUserByIdCommand(uint(userID), user)
+	updatedUser, err := command.UpdateUserByIdCommand(userID, user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -172,13 +172,13 @@ func deleteUserById(c *gin.Context) {
 		return
 	}
 
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	userID, err := uuid.Parse(userIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a positive integer"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a valid GUID"})
 		return
 	}
 
-	user, err := command.DeleteUserByIdCommand(uint(userID))
+	user, err := command.DeleteUserByIdCommand(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

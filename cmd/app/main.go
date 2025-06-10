@@ -7,12 +7,16 @@ import (
 	"github.com/CallumLewisGH/Generic-Service-Base/database"
 	_ "github.com/CallumLewisGH/Generic-Service-Base/docs"
 	"github.com/CallumLewisGH/Generic-Service-Base/internal/api"
+	"github.com/CallumLewisGH/Generic-Service-Base/internal/api/authentication"
 	"github.com/CallumLewisGH/Generic-Service-Base/internal/api/routes"
 	_ "github.com/joho/godotenv"
 	_ "github.com/lann/builder"
 )
 
 func main() {
+	//Get Authentication Config
+	authentication.SetupGoogleOAuth()
+
 	//Database Initialisation
 	database.GetDatabase()
 
@@ -30,28 +34,6 @@ func main() {
 
 }
 
-//TODO for full architecture
-// BARE BONES:
-//  - HTTP Routing CHECK
-//  - Database connection CHECK
-//  - Object mapping CHECK
-//  - Database interactions CHECK
-//  - Service, data and presentation layers CHECK
-
-// Do just to see what challenges you aren't aware of:
-//  - Create Delete UserById route CHECK
-//  - Create Update UserById route CHECK
-//  - Create Get    UserById route CHECK
-
-// WANT TO HAVE:
-//  - QueryStringBuilder type thing CHECK (THAT NEED HAS BEEN FILLED)
-//  - Authentication HALFWAY => I think I can use GoAuth with a auth provider IE google
-//     - I can implement Authentication Middleware on routes
-//     - I can foresee a problem with RBAC where I can't call more than one command/query from the same route. Since I won't be able to effectively "rollback" the transactions
-//  - Forgot my passcode
-//  - 2FA
-//  - Role based access control NOT EVEN CLOSE
-
 //Implementation Notes
 // Queries IE repo.find, .first, all accept pointers &user and data is returned to that object with an err being returned from the function
 // Commands IE repo.CreateOne, UpdateMany, DeleteOne, all accept actual values this way the input value is discaurded and another value is supplimented
@@ -61,3 +43,18 @@ func main() {
 // - swag init -g cmd/app/main.go --dir ./
 // - go run cmd/app/main.go
 //
+
+//TODO:
+// Implement Basic Authenticaiton
+// Make middleware using this authentication to secure route
+// Role Based Access control IE Authroisation => Where to apply authroisation middleware? on the commands?
+//  - roles permissions ect
+//    - Should be able to create permissions for each command and then apply based off of that
+//    - There should be a way to scope your database write access to fields only associated with you
+
+// SQL tables that need adding:
+//  - user.settings + user.settings_parameters
+//  - login attempts
+//  - RBAC ones
+
+// Look into configuring air for hot reloads

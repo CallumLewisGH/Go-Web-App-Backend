@@ -1,7 +1,31 @@
 definitions:
+  userModel.CreateUserRequest:
+    properties:
+      authId:
+        type: string
+      email:
+        type: string
+      username:
+        type: string
+    type: object
+  userModel.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      profilePicture:
+        type: string
+      timezone:
+        type: string
+      username:
+        type: string
+    type: object
   userModel.UserDTO:
     properties:
+      authId:
+        type: string
       bio:
+        type: string
+      createdAt:
         type: string
       deactivatedAt:
         type: string
@@ -10,7 +34,7 @@ definitions:
       emailVerified:
         type: boolean
       id:
-        type: integer
+        type: string
       isActive:
         description: Status
         type: boolean
@@ -26,17 +50,10 @@ definitions:
         type: string
       timezone:
         type: string
+      updatedAt:
+        type: string
       username:
         description: Authentication
-        type: string
-    type: object
-  userModel.UserRequest:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-      username:
         type: string
     type: object
 info:
@@ -100,7 +117,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/userModel.UserRequest'
+          $ref: '#/definitions/userModel.CreateUserRequest'
       produces:
       - application/json
       responses:
@@ -212,7 +229,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/userModel.UserDTO'
+          $ref: '#/definitions/userModel.UpdateUserRequest'
       produces:
       - application/json
       responses:

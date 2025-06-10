@@ -6,10 +6,11 @@ import (
 	cqrs "github.com/CallumLewisGH/Generic-Service-Base/internal/domain"
 	repos "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/repositories"
 	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func UpdateUserByIdCommand(id uint, user userModel.UserDTO) (*userModel.UserDTO, error) {
+func UpdateUserByIdCommand(id uuid.UUID, user userModel.UpdateUserRequest) (*userModel.UserDTO, error) {
 	commandFunc := func(db *gorm.DB, ctx context.Context) (*userModel.UserDTO, error) {
 		dest := userModel.User{}
 		dest.ID = id

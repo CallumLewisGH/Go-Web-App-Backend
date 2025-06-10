@@ -66,7 +66,7 @@ func (repo *BaseRepo[T]) DeleteOne(dest T) (T, error) {
 	if err := repo.db.Where(dest).First(&model).Error; err != nil {
 		return *new(T), err
 	}
-	if err := repo.db.Delete(&dest).Error; err != nil {
+	if err := repo.db.Where(dest).Delete(&dest).Error; err != nil {
 		return *new(T), err
 	}
 	return model, nil
@@ -78,7 +78,7 @@ func (repo *BaseRepo[T]) DeleteMany(dest []T) ([]T, error) {
 	if err := repo.db.Where(dest).Find(&toDelete).Error; err != nil {
 		return nil, err
 	}
-	if err := repo.db.Delete(&dest).Error; err != nil {
+	if err := repo.db.Where(dest).Delete(&dest).Error; err != nil {
 		return nil, err
 	}
 	return toDelete, nil

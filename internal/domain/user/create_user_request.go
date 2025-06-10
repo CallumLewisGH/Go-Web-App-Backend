@@ -1,7 +1,7 @@
 package userModel
 
-type UserRequest struct {
+type CreateUserRequest struct {
 	Username string
 	Email    string
-	Password string
+	AuthId   string
 }

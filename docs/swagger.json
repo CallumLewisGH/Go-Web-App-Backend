@@ -95,7 +95,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/userModel.UserRequest"
+                            "$ref": "#/definitions/userModel.CreateUserRequest"
                         }
                     }
                 ],
@@ -208,7 +208,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/userModel.UserDTO"
+                            "$ref": "#/definitions/userModel.UpdateUserRequest"
                         }
                     }
                 ],
@@ -305,10 +305,47 @@
         }
     },
     "definitions": {
+        "userModel.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "authId": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "userModel.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "profilePicture": {
+                    "type": "string"
+                },
+                "timezone": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "userModel.UserDTO": {
             "type": "object",
             "properties": {
+                "authId": {
+                    "type": "string"
+                },
                 "bio": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "deactivatedAt": {
@@ -321,7 +358,7 @@
                     "type": "boolean"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "isActive": {
                     "description": "Status",
@@ -344,22 +381,11 @@
                 "timezone": {
                     "type": "string"
                 },
+                "updatedAt": {
+                    "type": "string"
+                },
                 "username": {
                     "description": "Authentication",
-                    "type": "string"
-                }
-            }
-        },
-        "userModel.UserRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

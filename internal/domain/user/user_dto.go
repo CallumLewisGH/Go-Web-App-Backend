@@ -2,16 +2,21 @@ package userModel
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type UserDTO struct {
-	ID uint
+	ID        uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
 
 	// Authentication
 	Username      string
 	Email         string
 	EmailVerified bool
 	LastLogin     *time.Time
+	AuthId        string
 
 	// Profile
 	ProfilePicture *string

@@ -3,11 +3,16 @@ package userModel
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
+	//Standard
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 
 	// Authentication
 	Username      string `gorm:"size:50;uniqueIndex;not null"`
@@ -15,14 +20,13 @@ type User struct {
 	EmailVerified bool   `gorm:"default:false"`
 	PasswordHash  string `gorm:"size:255;not null" json:"-"`
 	LastLogin     *time.Time
-	PasswordSalt  string `gorm:"size:255;not null" json:"-"`
+	AuthId        string `gorm:"size:255;uniqueIndex;not null" json:"-"`
 
 	// Profile
 	ProfilePicture *string `gorm:"text"`
 	Bio            string  `gorm:"size:500"`
 
 	// Preferences
-	Locale   string `gorm:"size:10;default:'en'"`
 	Timezone string `gorm:"size:50"`
 
 	// Status

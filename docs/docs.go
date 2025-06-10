@@ -106,7 +106,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/userModel.UserRequest"
+                            "$ref": "#/definitions/userModel.CreateUserRequest"
                         }
                     }
                 ],
@@ -219,7 +219,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/userModel.UserDTO"
+                            "$ref": "#/definitions/userModel.UpdateUserRequest"
                         }
                     }
                 ],
@@ -316,10 +316,47 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "userModel.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "authId": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "userModel.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "profilePicture": {
+                    "type": "string"
+                },
+                "timezone": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "userModel.UserDTO": {
             "type": "object",
             "properties": {
+                "authId": {
+                    "type": "string"
+                },
                 "bio": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "deactivatedAt": {
@@ -332,7 +369,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "isActive": {
                     "description": "Status",
@@ -355,22 +392,11 @@ const docTemplate = `{
                 "timezone": {
                     "type": "string"
                 },
+                "updatedAt": {
+                    "type": "string"
+                },
                 "username": {
                     "description": "Authentication",
-                    "type": "string"
-                }
-            }
-        },
-        "userModel.UserRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }
