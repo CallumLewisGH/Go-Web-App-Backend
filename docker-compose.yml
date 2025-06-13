@@ -1,11 +1,5 @@
 services:
-  service_base:
-    container_name: Generic-Service-Base
-    build: ./
-    ports:
-      - "8080:8080"
-  
-  db:
+  dev_db:
     container_name: Generic-db
     image: postgres:latest
     environment:
@@ -15,13 +9,32 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - db_data:/var/lib/postgesql/data
+      - dev_db_data:/var/lib/postgresql/data
+  
+  test_db:
+    container_name: Generic-Test-db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "Mosaic~Tapestry4744"
+      POSTGRES_DB: Generic_Test_db
+    ports:
+      - 5433:5432
+    volumes:
+      - test_db_data:/var/lib/postgresql/data
+  
+  service_base:
+    container_name: Generic-Service-Base
+    build: ./
+    ports:
+      - "8080:8080"
   
   # web:
   #   volumes:
   #     - web:usr/src/app
 
 volumes:
-  db_data:
+  dev_db_data:
+  test_db_data:
   #base:
   #web:

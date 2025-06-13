@@ -43,19 +43,15 @@ func main() {
 // - docker compose up
 // - swag init -g cmd/app/main.go --dir ./
 // - go run cmd/app/main.go
-//
+// - go test ./unit_tests
 
-//TODO:
-// Implement Basic Authenticaiton
-// Make middleware using this authentication to secure route
+// TODO:
 // Role Based Access control IE Authroisation => Where to apply authroisation middleware? on the commands?
 //  - roles permissions ect
 //    - Should be able to create permissions for each command and then apply based off of that
 //    - There should be a way to scope your database write access to fields only associated with you
 
-// SQL tables that need adding:
-//  - user.settings + user.settings_parameters
-//  - login attempts
-//  - RBAC ones
+// Make commands and queries asynchronous using go routines:
+//  - This will speed things up significantly
 
 // Look into configuring air for hot reloads

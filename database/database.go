@@ -31,7 +31,7 @@ func GetDatabase() *Database {
 
 func (db *Database) InitialiseDB() {
 	log.Printf("Connecting to Database with GORM...")
-	err := godotenv.Load()
+	err := godotenv.Load(".dev.env")
 	if err != nil {
 		log.Printf("Error loading .env file: %v", err)
 	}
@@ -62,6 +62,41 @@ func (db *Database) CheckDatabaseHealth() error {
 		return err
 	}
 	return sqlDB.Ping()
+}
+
+func GetTestDatabase() *Database {
+	once.Do(func() {
+		dbInstance = &Database{}
+		dbInstance.InitialiseTestDB()
+	})
+	return dbInstance
+}
+
+func (db *Database) InitialiseTestDB() {
+	log.Printf("Connecting to Test Database with GORM...")
+	err := godotenv.Load("../.test.env")
+	if err != nil {
+		log.Printf("Error loading .env file: %v", err)
+	}
+
+	dsn := os.Getenv("DATABASE_CONNECTION_STRING")
+
+	gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		PrepareStmt: true,
+	})
+	if err != nil {
+		log.Fatalf("Failed to open test database: %v", err)
+	}
+
+	sqlDB, err := gormDB.DB()
+	if err != nil {
+		log.Fatalf("Failed to get underlying sql.DB: %v", err)
+	}
+
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+
+	db.GormDB = gormDB
+	log.Printf("GORM Test Database Connection Succeeded")
 }
 
 func (db *Database) CloseDatabase() error {

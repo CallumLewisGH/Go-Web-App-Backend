@@ -3,6 +3,7 @@ package repos
 import (
 	"github.com/CallumLewisGH/Generic-Service-Base/database"
 	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
+	"github.com/google/uuid"
 )
 
 type UserRepo struct {
@@ -14,11 +15,11 @@ func NewUserRepo(db database.IDatabase) *UserRepo {
 }
 
 func (repo *UserRepo) WithName(name string) *UserRepo {
-	repo.db = repo.db.Where("name = ?", name)
+	repo.db = repo.db.Where("username = ?", name)
 	return repo
 }
 
-func (repo *UserRepo) WithId(id uint) *UserRepo {
+func (repo *UserRepo) WithId(id uuid.UUID) *UserRepo {
 	repo.db = repo.db.Where("id = ?", id)
 	return repo
 }
