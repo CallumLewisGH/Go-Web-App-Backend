@@ -1,15 +1,34 @@
 services:
+  service_base:
+    container_name: Generic-Service-Base
+    build: .
+    ports:
+      - "8080:8080"
+  
   dev_db:
-    container_name: Generic-db
+    container_name: Generic-db-dev
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "Mosaic~Tapestry4744"
-      POSTGRES_DB: Generic_db
+      POSTGRES_DB: Generic_db_dev
     ports:
       - 5432:5432
     volumes:
       - dev_db_data:/var/lib/postgresql/data
+    restart: always
+
+  prod_db:
+    container_name: Generic-db-prod
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "Mosaic~Tapestry4744"
+      POSTGRES_DB: Generic_db_prod
+    ports:
+      - 5433:5432
+    volumes:
+      - prod_db_data:/var/lib/postgresql/data
   
   # web:
   #   volumes:
@@ -17,5 +36,6 @@ services:
 
 volumes:
   dev_db_data:
+  prod_db_data:
   #base:
   #web:

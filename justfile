@@ -11,14 +11,14 @@ dev:
     docker compose up dev_db -d
     air
 
-# Run the application for production IE using a docker container
+# Run the application for production IE using a docker container (Not configured yet)
 prod:
-    docker compose up dev_db -d
+    docker compose up prod_db -d
     docker compose up service_base
 
 # Run tests with coverage
 test:
-    go test -cover ./tests
+    go test -cover ./tests/integration_tests/ ./tests/unit_tests/
 
 # Run swagger docs generation
 swag:

@@ -40,7 +40,7 @@ func main() {
 // Queries IE repo.find, .first, all accept pointers &user and data is returned to that object with an err being returned from the function
 // Commands IE repo.CreateOne, UpdateMany, DeleteOne, all accept actual values this way the input value is discaurded and another value is supplimented
 // New models need to be added to the model_registry in the database package
-// All usefull commands have now been moved to the justfile
+// All usefull commands have now been moved to the justfi
 
 // TODO:
 // Make commands and queries asynchronous using go routines:
