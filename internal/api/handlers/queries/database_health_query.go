@@ -8,5 +8,5 @@ func CheckDatabaseHealth() string {
 	if database.GetDatabase().CheckDatabaseHealth() != nil {
 		return "database unhealthy! x_x!"
 	}
-	return "database healthy! :-)"
+	return "database healthy! :)"
 }

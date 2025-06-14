@@ -21,6 +21,6 @@ test:
     go test -cover ./tests/integration_tests
 
 # Run swagger docs generation
-swagger:
+swag:
     rm -rf ./docs 
     swag init -g cmd/app/main.go --dir ./

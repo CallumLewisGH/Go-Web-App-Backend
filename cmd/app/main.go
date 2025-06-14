@@ -39,20 +39,16 @@ func main() {
 //Implementation Notes
 // Queries IE repo.find, .first, all accept pointers &user and data is returned to that object with an err being returned from the function
 // Commands IE repo.CreateOne, UpdateMany, DeleteOne, all accept actual values this way the input value is discaurded and another value is supplimented
-
-//COMMANDS THAT ARE GOOD TO HAVE EASY ACCESS TO
-// - docker compose up
-// - swag init -g cmd/app/main.go --dir ./
-// - go run cmd/app/main.go
-// - go test ./unit_tests
+// New models need to be added to the model_registry in the database package
+// All usefull commands have now been moved to the justfile
 
 // TODO:
-// Make tests able to use the same database and CQRS as prod so that I can actually do stuff in tests like I would in routes
 // Make commands and queries asynchronous using go routines:
 //  - This will speed things up significantly
+
+// Add validation for inputs to handle inputs more safely and easily
+
 // Role Based Access control IE Authroisation => Where to apply authroisation middleware? on the commands?
 //  - roles permissions ect
 //    - Should be able to create permissions for each command and then apply based off of that
 //    - There should be a way to scope your database write access to fields only associated with you
-
-// Look into configuring air for hot reloads
