@@ -18,6 +18,7 @@ func main() {
 	authentication.SetupGoogleOAuth()
 
 	//Database Initialisation
+	database.SetProdMode() // Switch to production mode
 	database.GetDatabase()
 
 	//Creates new server instance
@@ -46,14 +47,12 @@ func main() {
 // - go test ./unit_tests
 
 // TODO:
+// Make tests able to use the same database and CQRS as prod so that I can actually do stuff in tests like I would in routes
+// Make commands and queries asynchronous using go routines:
+//  - This will speed things up significantly
 // Role Based Access control IE Authroisation => Where to apply authroisation middleware? on the commands?
 //  - roles permissions ect
 //    - Should be able to create permissions for each command and then apply based off of that
 //    - There should be a way to scope your database write access to fields only associated with you
-
-// Make commands and queries asynchronous using go routines:
-//  - This will speed things up significantly
-
-// IntegrationTests should work -> Spin up docker containers per each one
 
 // Look into configuring air for hot reloads

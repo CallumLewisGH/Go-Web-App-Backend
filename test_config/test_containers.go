@@ -70,6 +70,7 @@ func StartTestDatabaseContainer(t *testing.T) *DockerContainer {
 		DbConnStr: connStr,
 	}
 }
+
 func GetAvailablePort() (int, error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	if err != nil {
