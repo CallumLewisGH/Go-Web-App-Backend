@@ -18,8 +18,7 @@ prod:
 
 # Run tests with coverage
 test:
-    docker compose up test_db -d
-    go test -cover ./unit_tests
+    go test ./tests/integration_tests
 
 # Run swagger docs generation
 swagger:

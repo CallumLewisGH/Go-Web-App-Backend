@@ -1,25 +1,24 @@
 package repos
 
 import (
-	"github.com/CallumLewisGH/Generic-Service-Base/database"
 	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
-	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type UserRepo struct {
 	*BaseRepo[userModel.User]
 }
 
-func NewUserRepo(db database.IDatabase) *UserRepo {
+func NewUserRepo(db *gorm.DB) *UserRepo {
 	return &UserRepo{BaseRepo: NewBaseRepo[userModel.User](db)}
 }
 
 func (repo *UserRepo) WithName(name string) *UserRepo {
-	repo.db = repo.db.Where("username = ?", name)
+	repo.db = repo.db.Where("name = ?", name)
 	return repo
 }
 
-func (repo *UserRepo) WithId(id uuid.UUID) *UserRepo {
+func (repo *UserRepo) WithId(id uint) *UserRepo {
 	repo.db = repo.db.Where("id = ?", id)
 	return repo
 }

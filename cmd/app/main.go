@@ -54,4 +54,6 @@ func main() {
 // Make commands and queries asynchronous using go routines:
 //  - This will speed things up significantly
 
+// IntegrationTests should work -> Spin up docker containers per each one
+
 // Look into configuring air for hot reloads
