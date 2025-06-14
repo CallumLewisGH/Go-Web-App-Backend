@@ -1,4 +1,4 @@
-package integration_test_config
+package integration_tests
 
 import (
 	"bytes"

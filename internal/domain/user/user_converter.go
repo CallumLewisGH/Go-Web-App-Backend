@@ -3,6 +3,7 @@ package userModel
 func (user *User) ToUserDTO() *UserDTO {
 	return &UserDTO{
 		ID:             user.ID,
+		AuthId:         user.AuthId,
 		CreatedAt:      user.CreatedAt,
 		UpdatedAt:      user.UpdatedAt,
 		Username:       user.Username,
@@ -22,8 +23,8 @@ func ToUserDTOs(users []User) []UserDTO {
 	userDTOs := []UserDTO{}
 	if len(users) > 0 {
 		println(len(users))
-		for i := range users {
-			userDTOs = append(userDTOs, *users[i].ToUserDTO())
+		for _, i := range users {
+			userDTOs = append(userDTOs, *i.ToUserDTO())
 		}
 	}
 	return userDTOs

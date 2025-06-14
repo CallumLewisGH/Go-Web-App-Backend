@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -139,10 +138,25 @@ func (db *Database) CloseDatabase() error {
 	return sqlDB.Close()
 }
 
-func (db *Database) RunMigrations() error {
-	return db.GetGormDatabase().AutoMigrate(&userModel.User{})
-}
-
 func (db *Database) GetGormDatabase() *gorm.DB {
 	return db.GormDB
+}
+
+func (db *Database) RunMigrations() error {
+	for _, model := range GetModelRegistry().models {
+		if err := GetDatabase().GetGormDatabase().AutoMigrate(model); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (db *Database) ClearAllTables() error {
+	for _, model := range GetModelRegistry().models {
+		if err := db.GormDB.Unscoped().Where("1 = 1").Delete(model).Error; err != nil {
+			return err
+		}
+	}
+	return nil
 }
