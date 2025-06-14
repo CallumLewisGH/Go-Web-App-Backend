@@ -2,6 +2,7 @@ package repos
 
 import (
 	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -13,12 +14,12 @@ func NewUserRepo(db *gorm.DB) *UserRepo {
 	return &UserRepo{BaseRepo: NewBaseRepo[userModel.User](db)}
 }
 
-func (repo *UserRepo) WithName(name string) *UserRepo {
-	repo.db = repo.db.Where("name = ?", name)
+func (repo *UserRepo) WithName(username string) *UserRepo {
+	repo.db = repo.db.Where("username = ?", username)
 	return repo
 }
 
-func (repo *UserRepo) WithId(id uint) *UserRepo {
+func (repo *UserRepo) WithId(id uuid.UUID) *UserRepo {
 	repo.db = repo.db.Where("id = ?", id)
 	return repo
 }

@@ -52,7 +52,6 @@ func StartTestDatabaseContainer(t *testing.T) *DockerContainer {
 	}
 
 	containerID := string(bytes.TrimSpace(out.Bytes()))
-	t.Log("CONTAINERID: " + containerID)
 
 	connStr := fmt.Sprintf("host=localhost port=%d user=%s password=%s dbname=%s_%d sslmode=disable",
 		port,

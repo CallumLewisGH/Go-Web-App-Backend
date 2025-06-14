@@ -18,7 +18,7 @@ prod:
 
 # Run tests with coverage
 test:
-    go test ./tests/integration_tests
+    go test -cover ./tests/integration_tests
 
 # Run swagger docs generation
 swagger:

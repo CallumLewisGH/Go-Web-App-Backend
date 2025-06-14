@@ -13,18 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
-type TestSuite struct {
-	suite.Suite
-	db        *gorm.DB
-	tx        *gorm.DB
-	container *integration_test_config.DockerContainer
-}
-
 func (suite *TestSuite) SetupSuite() {
-	suite.T().Log("Spinning up test db container")
-
 	// Docker Container Setup
-
 	suite.container = integration_test_config.StartTestDatabaseContainer(suite.T())
 
 	// Database Connection
@@ -54,7 +44,7 @@ func TestUserRepository(t *testing.T) {
 	suite.Run(t, new(TestSuite))
 }
 
-func (s *TestSuite) TestGetUserByUsername_Success(t *testing.T) {
+func (s *TestSuite) TestGetUserByUsername_Success() {
 	testUser := userModel.User{
 		ID:       uuid.New(),
 		Username: "testuser",
