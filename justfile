@@ -9,7 +9,7 @@ build:
 # Run the application for development IE not using a docker container for the backend
 dev:
     docker compose up dev_db -d
-    go run ./cmd/app/main.go
+    air
 
 # Run the application for production IE using a docker container
 prod:
@@ -18,7 +18,7 @@ prod:
 
 # Run tests with coverage
 test:
-    go test -cover ./tests/integration_tests
+    go test -cover ./tests
 
 # Run swagger docs generation
 swag:
