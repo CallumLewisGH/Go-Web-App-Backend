@@ -43,9 +43,6 @@ func main() {
 // All usefull commands have now been moved to the justfi
 
 // TODO:
-// Make commands and queries asynchronous using go routines:
-//  - This will speed things up significantly
-
 // Add validation for inputs to handle inputs more safely and easily
 
 // Role Based Access control IE Authroisation => Where to apply authroisation middleware? on the commands?

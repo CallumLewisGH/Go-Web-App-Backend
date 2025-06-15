@@ -14,7 +14,7 @@ func NewUserRepo(db *gorm.DB) *UserRepo {
 	return &UserRepo{BaseRepo: NewBaseRepo[userModel.User](db)}
 }
 
-func (repo *UserRepo) WithName(username string) *UserRepo {
+func (repo *UserRepo) WithUsername(username string) *UserRepo {
 	repo.db = repo.db.Where("username = ?", username)
 	return repo
 }
