@@ -15,19 +15,24 @@ func keyFunc(c *gin.Context) string {
 }
 
 func errorHandler(c *gin.Context, info ratelimit.Info) {
-	c.String(429, "Too many requests. Try again in "+time.Until(info.ResetTime).String())
+	c.JSON(429, "Too many requests. Try again in "+time.Until(info.ResetTime).String())
 }
 
-func NewRateLimiter() gin.HandlerFunc {
-	_ = godotenv.Load("/home/callum/Desktop/Go-Web-App-Backend/.dev.env")
+func NewRateLimiter(requestsPer uint, timeUnit time.Duration, redisURL string) gin.HandlerFunc {
+	if redisURL == "" {
+		// Fall back to env config if no URL provided
+		_ = godotenv.Load("/home/callum/Desktop/Go-Web-App-Backend/.dev.env") //Not configured yet
+		redisURL = os.Getenv("REDIS_URL")
+	}
 
 	store := ratelimit.RedisStore(&ratelimit.RedisOptions{
 		RedisClient: redis.NewClient(&redis.Options{
-			Addr: os.Getenv("FRONTEND_URL"),
+			Addr: redisURL,
 		}),
-		Rate:  time.Second,
-		Limit: 5,
+		Rate:  timeUnit,
+		Limit: requestsPer,
 	})
+
 	mw := ratelimit.RateLimiter(store, &ratelimit.Options{
 		ErrorHandler: errorHandler,
 		KeyFunc:      keyFunc,

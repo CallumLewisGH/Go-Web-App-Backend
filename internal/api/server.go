@@ -3,12 +3,14 @@ package api
 import (
 	"fmt"
 	"os"
+	"time"
 
 	_ "github.com/CallumLewisGH/Generic-Service-Base/docs"
 	"github.com/CallumLewisGH/Generic-Service-Base/internal/api/middleware"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
 )
@@ -30,9 +32,11 @@ func NewServer() *Server {
 		[]byte(os.Getenv("GIN_SESSION_SECRET")),
 	)
 
-	// Session middleware
-	router.Use(middleware.NewRateLimiter())
+	_ = godotenv.Load()
+
+	// Global middleware middleware application
 	router.Use(sessions.Sessions("mysession", store))
+	router.Use(middleware.NewRateLimiter(5, time.Second, os.Getenv("REDIS_URL")))
 
 	// Swagger setup
 	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))

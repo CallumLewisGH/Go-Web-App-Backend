@@ -9,12 +9,14 @@ build:
 # Run the application for development IE not using a docker container for the backend
 dev:
     sudo service postgresql stop
+    docker compose up redis_db -d
     docker compose up dev_db -d
     air
 
 # Run the application for production IE using a docker container (Not configured yet)
 prod:
     sudo service postgresql stop
+    docker compose up redis_db -d
     docker compose up prod_db -d
     docker compose up service_base
 

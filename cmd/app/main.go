@@ -46,10 +46,26 @@ func main() {
 // New models need to be added to the model_registry in the database package
 // All usefull commands have now been moved to the justfile
 // Change to prod mode for the database when deploying to prod => Also change GIN server from default
+// The current management for prod, dev and test respectively is awfull so don't even try to run this locally
+// I might try to get my docker compose.yaml on github but I would have to do a load of stuff to obscure my password
+
+//
+
+//
+
+//
+
+//
+
+//
+
+//
 
 // TODO:
-
-// Add rate limiting for security
+// Sort out how I am handling different versions IE prod, dev and test modes
+// There should not be three distinct functions for each doing slightly different stuff
+// We should instead pass the data in and add the information into the main.go
+// Tests should be able to integrate with this also since the test suite is essentially the same as the main.go but for tests
 
 // Look at crfs => something like that security issues
 

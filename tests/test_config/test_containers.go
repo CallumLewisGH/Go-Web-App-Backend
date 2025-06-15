@@ -1,4 +1,4 @@
-package integration_tests
+package test_config
 
 import (
 	"bytes"
@@ -68,6 +68,45 @@ func StartTestDatabaseContainer(t *testing.T) *DockerContainer {
 			exec.Command("docker", "rm", "-f", "-v", containerID).Run()
 		},
 		DbConnStr: connStr,
+	}
+}
+
+func StartTestRedisContainer(t *testing.T) *DockerContainer {
+	t.Helper()
+
+	port, err := GetAvailablePort()
+	if err != nil {
+		t.Fatalf("Failed to get available port: %v", err)
+	}
+
+	containerName := fmt.Sprintf("redis-test-%d", port)
+	args := []string{
+		"run", "-d",
+		"--name", containerName,
+		"-p", fmt.Sprintf("%d:6379", port),
+		"redis:alpine",
+	}
+
+	cmd := exec.Command("docker", args...)
+
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	if err := cmd.Run(); err != nil {
+		t.Fatalf("Failed to start Redis container: %v", err)
+	}
+
+	containerID := string(bytes.TrimSpace(out.Bytes()))
+
+	redisURL := fmt.Sprintf("localhost:%d", port)
+
+	return &DockerContainer{
+		ID:   containerID,
+		Port: port,
+		Name: containerName,
+		Cleanup: func() {
+			exec.Command("docker", "rm", "-f", "-v", containerID).Run()
+		},
+		DbConnStr: redisURL,
 	}
 }
 

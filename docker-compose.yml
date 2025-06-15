@@ -29,11 +29,21 @@ services:
     volumes:
       - prod_db_data:/var/lib/postgresql/data
   
+  redis_db:
+    container_name: Generic-redis-store
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+
   # web:
   #   volumes:
   #     - web:usr/src/app
 
 volumes:
+  redis_data:
   dev_db_data:
   prod_db_data:
   #base:
