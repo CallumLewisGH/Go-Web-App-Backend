@@ -18,7 +18,7 @@ func main() {
 	authentication.SetupGoogleOAuth()
 
 	//Database Initialisation
-	database.SetProdMode() // Switch to production mode
+	database.SetDevMode() // Change to prod mode during production
 	database.GetDatabase()
 
 	//Creates new server instance
@@ -40,10 +40,16 @@ func main() {
 // Queries IE repo.find, .first, all accept pointers &user and data is returned to that object with an err being returned from the function
 // Commands IE repo.CreateOne, UpdateMany, DeleteOne, all accept actual values this way the input value is discaurded and another value is supplimented
 // New models need to be added to the model_registry in the database package
-// All usefull commands have now been moved to the justfi
+// All usefull commands have now been moved to the justfile
+// Change to prod mode for the database when deploying to prod => Also change GIN server from default
 
 // TODO:
-// Add validation for inputs to handle inputs more safely and easily
+// Find some way of having ' chars inside of JSON
+// Add rate limiting for security
+
+// Find a way to make the API private as to not accept requests from anywhere but a specified frontend domain
+//  - This is super important for me to maintain security I don't think I can code well enough right now to have a public facing api
+//  -
 
 // Role Based Access control IE Authroisation => Where to apply authroisation middleware? on the commands?
 //  - roles permissions ect

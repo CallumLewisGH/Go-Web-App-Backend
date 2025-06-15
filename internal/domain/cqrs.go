@@ -26,8 +26,6 @@ func ConcurrentQueries(queryFuncs ...func(*gorm.DB, context.Context) (any, error
 
 		go func(index int, qf func(*gorm.DB, context.Context) (any, error)) {
 			defer wg.Done()
-
-			// Execute the query
 			data, err := DbQuery(qf)
 			results[index] = QueryResult[any]{
 				Data: data,

@@ -22,7 +22,7 @@ func NewServer() *Server {
 	fmt.Println("Creating Server...")
 
 	// Create Gin instance (with logger and recovery middleware)
-	router := gin.Default()
+	router := gin.Default() //Change to prod
 
 	// Session configuration
 	store := cookie.NewStore(

@@ -19,20 +19,34 @@ var (
 	dbInstance  *Database
 	once        sync.Once
 	testMode    bool
+	prodMode    bool
+	devMode     bool
 	testConnStr string
 )
 
 // SetTestMode enables test mode with a specific connection string
 func SetTestMode(connStr string) {
 	testMode = true
+	prodMode = false
+	devMode = false
 	testConnStr = connStr
 	dbInstance = nil
 	once = sync.Once{}
 }
 
-// SetProdMode switches back to production mode
+func SetDevMode() {
+	testMode = false
+	prodMode = false
+	devMode = true
+	testConnStr = ""
+	dbInstance = nil
+	once = sync.Once{}
+}
+
 func SetProdMode() {
 	testMode = false
+	prodMode = true
+	devMode = false
 	testConnStr = ""
 	dbInstance = nil
 	once = sync.Once{}
@@ -43,8 +57,16 @@ func GetDatabase() *Database {
 		dbInstance = &Database{}
 		if testMode {
 			dbInstance.InitialiseTestDB(testConnStr)
-		} else {
-			dbInstance.InitialiseDB()
+		}
+		if devMode {
+			dbInstance.InitialiseDevDB()
+		}
+		if prodMode {
+			dbInstance.InitialiseProdDB()
+		}
+
+		if !prodMode && !devMode && !testMode {
+			log.Fatalf("No Database Mode Set! :(")
 		}
 	})
 	return dbInstance
@@ -83,9 +105,49 @@ func (db *Database) InitialiseTestDB(connStr string) {
 	log.Printf("GORM Database Connection Succeeded")
 }
 
-func (db *Database) InitialiseDB() {
+func (db *Database) InitialiseDevDB() {
 	log.Printf("Connecting to Database with GORM...")
 	err := godotenv.Load("/home/callum/Desktop/Go-Web-App-Backend/.dev.env")
+	if err != nil {
+		log.Printf("Error loading .env file: %v", err)
+	}
+
+	var gormDB *gorm.DB
+
+	connStr := os.Getenv("DATABASE_CONNECTION_STRING")
+
+	for i := range 5 {
+		if i > 0 {
+			time.Sleep(1 * time.Second)
+			log.Printf("Retrying connection to database, attempt %d", i+1)
+		}
+
+		gormDB, err := gorm.Open(postgres.Open(connStr), &gorm.Config{
+			PrepareStmt: true,
+		})
+		if err == nil {
+			db.GormDB = gormDB
+			log.Printf("GORM Database Connection Succeeded")
+			return
+		}
+		log.Printf("Failed to open database: %v", err)
+	}
+
+	sqlDB, err := gormDB.DB()
+	if err != nil {
+		log.Fatalf("Failed to get underlying sql.DB: %v", err)
+	}
+
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+
+	db.GormDB = gormDB
+	log.Printf("GORM Database Connection Succeeded")
+}
+
+// Not properly configured yet
+func (db *Database) InitialiseProdDB() {
+	log.Printf("Connecting to Database with GORM...")
+	err := godotenv.Load("/home/callum/Desktop/Go-Web-App-Backend/.prod.env")
 	if err != nil {
 		log.Printf("Error loading .env file: %v", err)
 	}

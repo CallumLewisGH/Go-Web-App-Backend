@@ -7,6 +7,7 @@ import (
 	"github.com/CallumLewisGH/Generic-Service-Base/internal/api"
 	command "github.com/CallumLewisGH/Generic-Service-Base/internal/api/handlers/commands"
 	query "github.com/CallumLewisGH/Generic-Service-Base/internal/api/handlers/queries"
+	"github.com/CallumLewisGH/Generic-Service-Base/internal/api/validation"
 	userModel "github.com/CallumLewisGH/Generic-Service-Base/internal/domain/user"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -93,13 +94,13 @@ func getUserById(c *gin.Context) {
 func createUser(c *gin.Context) {
 	var req userModel.CreateUserRequest
 
-	if err := c.ShouldBindJSON(req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body" + err.Error()})
 		return
 	}
 
-	if req.Username == "" || req.Email == "" || req.AuthId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Username, email, and authId are required"})
+	if errs := validation.ValidateBody(req); errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
 		return
 	}
 
@@ -126,25 +127,30 @@ func createUser(c *gin.Context) {
 // @Failure 500 {object} map[string]string "Internal server error"
 // @Router /users/id [put]
 func updateUserById(c *gin.Context) {
-	userIDStr := c.GetHeader("user_id")
-	if userIDStr == "" {
+	id := c.GetHeader("user_id")
+	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id header is required"})
 		return
 	}
 
-	userID, err := uuid.Parse(userIDStr)
+	userID, err := uuid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID must be a valid GUID"})
 		return
 	}
 
-	var user userModel.UpdateUserRequest
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var req userModel.UpdateUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
 		return
 	}
 
-	updatedUser, err := command.UpdateUserByIdCommand(userID, user)
+	if errs := validation.ValidateBody(req); errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
+		return
+	}
+
+	updatedUser, err := command.UpdateUserByIdCommand(userID, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
