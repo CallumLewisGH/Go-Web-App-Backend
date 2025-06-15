@@ -5,6 +5,7 @@ import (
 	"os"
 
 	_ "github.com/CallumLewisGH/Generic-Service-Base/docs"
+	"github.com/CallumLewisGH/Generic-Service-Base/internal/api/middleware"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,7 @@ func NewServer() *Server {
 	)
 
 	// Session middleware
+	router.Use(middleware.NewRateLimiter())
 	router.Use(sessions.Sessions("mysession", store))
 
 	// Swagger setup

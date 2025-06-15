@@ -22,10 +22,10 @@ func (r UpdateUserRequest) GetValidationError(err validator.FieldError) string {
 		return getEmailError(err)
 	case "Timezone":
 		return getTimezoneError(err)
-	case "Bio":
-		return getBioError(err)
 	case "ProfilePicture":
 		return getProfilePictureError(err)
+	case "Bio":
+		return getBioError(err)
 	default:
 		return fmt.Sprintf("Invalid value for %s", err.Field())
 	}

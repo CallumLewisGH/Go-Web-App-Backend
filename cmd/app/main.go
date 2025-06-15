@@ -13,6 +13,10 @@ import (
 	_ "github.com/lann/builder"
 )
 
+var (
+	hello string = "hello"
+)
+
 func main() {
 	//Get Authentication Config
 	authentication.SetupGoogleOAuth()
@@ -44,8 +48,10 @@ func main() {
 // Change to prod mode for the database when deploying to prod => Also change GIN server from default
 
 // TODO:
-// Find some way of having ' chars inside of JSON
+
 // Add rate limiting for security
+
+// Look at crfs => something like that security issues
 
 // Find a way to make the API private as to not accept requests from anywhere but a specified frontend domain
 //  - This is super important for me to maintain security I don't think I can code well enough right now to have a public facing api
